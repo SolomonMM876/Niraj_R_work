@@ -13,8 +13,9 @@ library(ggplot2)
 
 #load data
 #it helps to not have spaces or special symbols in your col names
-MBC_CNP_data <- read.csv("~/R/Niraj_data/MBC_CNP_data.csv")
-XRF_Data <- read.csv("~/R/Niraj_data/Pot_ExP_Data_For_ph_ec_soil.csv")
+MBC_CNP_data <- read.csv("Raw_data/MBC_CNP_data.csv")
+
+XRF_Data <- read.csv("Raw_data/Pot_ExP_Data_For_ph_ec_soil.csv")
 names(XRF_Data)[34]<-'Si_perc'
 names(XRF_Data)[79]<-'Zn_ppm'
 names(XRF_Data)[3]<-'Plant_type'
