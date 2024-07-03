@@ -41,25 +41,35 @@ print(names(XRF_Data))
 # For example, removing rows with missing values
 # XRF_Data <- na.omit(XRF_Data)
 ## plot P data by Plant.type, tissue and treatment
-ggplot(XRF_Data, aes(x=group, y=P_.ppm., colour=Dose)) + 
+ggplot(XRF_Data, aes(x=Dose, y=P_.ppm., colour=Dose)) + 
   geom_boxplot() + 
-  facet_wrap(~Plant_type, scale='free')
+  facet_wrap(~Plant_type, scale='free')+
+  geom_text(data = letters, aes(x = Dose, y = upper.CL, label = .group), color='Black',
+            position = position_dodge(width = 0.75), vjust = -1)+
+  theme_minimal()
 
+sub_XRF<-XRF_Data%>%
+  select(P_.ppm.,Dose, Plant_type)
+
+cor(sub_XRF)
 
 ## fit model and compare treatments
 # fit model
 m1 <- lm(P_.ppm. ~ Dose * Plant_type, data=XRF_Data)
+m2 <- lm(P_.ppm. ~ Dose , data=XRF_Data)
+
 # check residuals to see if transformation needed
 residualPlot(m1)
-qqPlot(m1)
+qqPlot(m1) # row 5 is a large outlier here...why? 
+outlier<-XRF_Data[5,]
 # test significance
 Anova(m1)
 # vif(m1)
 
 # comparing means by dose within species (ignores sample.identity)
 m1.emm <- emmeans(m1, ~ Dose | Plant_type)
-letters<-multcomp::cld(m1.emm,alpha = 0.05, Letters = letters)
+letters<-multcomp::cld(m1.emm,alpha = 0.05)
 
-model_means_cld<-subset(letters, select = c(Sterilized,Pythium,.group))
+model_means_cld<-subset(letters, select = c(.group))
 
 
